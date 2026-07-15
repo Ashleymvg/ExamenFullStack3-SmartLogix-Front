@@ -52,7 +52,14 @@ function ShareMenu({ label = "🔗 Compartir", align = "left" }) {
 
     const encodedUrl = encodeURIComponent(shareUrl);
     const encodedText = encodeURIComponent(shareText);
-
+// Los íconos SVG de las redes sociales 
+// (WhatsApp, Facebook, X, Instagram) 
+// provienen de Simple Icons (github.com/simple-icons/simple-icons),
+// una colección de código abierto de logos de marcas distribuida
+// bajo licencia CC0 1.0 (dominio público). 
+// Se incorporaron directamente como código SVG en el 
+// componente, sin agregar la librería como dependencia 
+// del proyecto.
     const options = [
         {
             name: "WhatsApp",
