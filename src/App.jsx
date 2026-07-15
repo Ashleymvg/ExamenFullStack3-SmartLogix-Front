@@ -8,6 +8,7 @@ import OrderPage from './pages/Order'
 import InventoryPage from './pages/Inventory'
 import PointsPage from './pages/Points'
 import PointsBadge from './components/PointsBadge'
+import ShareMenu from './components/ShareMenu'
 import bgAuth from './assets/DiseñoAuth.png'
 import bgApp from './assets/DiseñoMicroservicios.png'
 
@@ -132,7 +133,11 @@ function App() {
             )}
           </nav>
 
-          <button onClick={() => { clearLogin(); setIsLogin(false) }} style={{ marginTop: '50px', background: '#ff6b6b', color: 'white', border: 'none', padding: '10px 15px', borderRadius: '6px', cursor: 'pointer', width: '100%', fontWeight: 'bold' }}>
+          <div style={{ marginTop: '25px' }}>
+            <ShareMenu />
+          </div>
+
+          <button onClick={() => { clearLogin(); setIsLogin(false) }} style={{ marginTop: '30px', background: '#ff6b6b', color: 'white', border: 'none', padding: '10px 15px', borderRadius: '6px', cursor: 'pointer', width: '100%', fontWeight: 'bold' }}>
             Cerrar Sesión
           </button>
         </aside>

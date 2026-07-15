@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { inventoryService } from "../service/inventoryService";
 import { getSaveUser } from "../service/authService";
+import ShareMenu from "../components/ShareMenu";
 
 // Imagenes de los productos
 import imgTeclado from '../assets/TecladoMecanicoRGB.png';
@@ -33,6 +34,7 @@ function InventoryPage() {
     const [error, setError] = useState("");
     const [actionQty, setActionQty] = useState(1);
     const [actionMessage, setActionMessage] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
 
     // Vista: las operaciones manuales de bodega no debe verlas un cliente normal
     const currentUser = getSaveUser();
@@ -103,16 +105,49 @@ function InventoryPage() {
     if (loading && inventory.length === 0) return <h3>Cargando inventario...</h3>;
     if (error) return <h3 style={{color: 'red'}}>Error: {error}</h3>;
 
+    // Búsqueda simple en el cliente: coincide por SKU o nombre del producto
+    const normalizedSearch = searchTerm.trim().toLowerCase();
+    const filteredInventory = normalizedSearch
+        ? inventory.filter((item) =>
+              item.sku?.toLowerCase().includes(normalizedSearch) ||
+              item.productName?.toLowerCase().includes(normalizedSearch)
+          )
+        : inventory;
+
     return (
         <main style={{ display: 'flex', gap: '20px', height: '100%' }}>
             <section style={{ flex: 1, border: '1px solid #ddd', borderRadius: '8px', padding: '15px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <h2>Catálogo de Productos</h2>
-                    <button onClick={handleRefresh} style={{ padding: '8px 12px', cursor: 'pointer' }}>🔄 Refrescar</button>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                    <h2 style={{ margin: 0 }}>Catálogo de Productos</h2>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flex: 1, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+                        <input
+                            type="text"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            placeholder="🔍 Buscar por SKU o nombre..."
+                            style={{
+                                padding: '8px 12px',
+                                borderRadius: '6px',
+                                border: '1px solid #ccc',
+                                fontSize: '14px',
+                                minWidth: '200px',
+                                flex: '1 1 200px',
+                                maxWidth: '280px',
+                            }}
+                        />
+                        <ShareMenu label="🔗 Compartir" align="right" />
+                        <button onClick={handleRefresh} style={{ padding: '8px 12px', cursor: 'pointer' }}>🔄 Refrescar</button>
+                    </div>
                 </div>
-                
-                <ul style={{ listStyle: 'none', padding: 0 }}>
-                    {inventory.map((item) => (
+
+                {searchTerm && (
+                    <p style={{ fontSize: '13px', color: '#6b6375', margin: '10px 0 0 0' }}>
+                        {filteredInventory.length} resultado{filteredInventory.length !== 1 ? 's' : ''} para "{searchTerm}"
+                    </p>
+                )}
+
+                <ul style={{ listStyle: 'none', padding: 0, marginTop: '15px' }}>
+                    {filteredInventory.map((item) => (
                         <li 
                             key={item.sku} 
                             onClick={() => handleSelectItem(item.sku)}
@@ -132,6 +167,11 @@ function InventoryPage() {
                             </div>
                         </li>
                     ))}
+                    {filteredInventory.length === 0 && (
+                        <li style={{ padding: '15px', color: '#999', textAlign: 'center' }}>
+                            No se encontraron productos que coincidan con tu búsqueda.
+                        </li>
+                    )}
                 </ul>
             </section>
 
